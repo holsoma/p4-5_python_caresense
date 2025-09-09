@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>CareSense – Metrics</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <nav>
+      <a href="{{ url_for('index') }}">Home</a>
+      <a class="active" href="{{ url_for('metrics') }}">Metrics</a>
+      <a href="{{ url_for('dataset_admin') }}">Upload dataset</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert">{% for m in messages %}{{ m }}{% endfor %}</div>
+      {% endif %}
+    {% endwith %}
+
+    <h1>Operational Metrics</h1>
+    <p class="muted">Rule-based rollups to spot issues early.</p>
+
+    <section class="card">
+        <h2>Charts</h2>
+        <div class="grid charts">
+            <div class="chart-tile">
+            <h3>Sentiment Distribution</h3>
+            <img class="plot" src="{{ url_for('static', filename='plots/labels.png') }}?v={{ metrics.plots_version }}" alt="Sentiment Distribution">
+            </div>
+            <div class="chart-tile">
+            <h3>Rating Histogram</h3>
+            <img class="plot" src="{{ url_for('static', filename='plots/ratings.png') }}?v={{ metrics.plots_version }}" alt="Rating Histogram">
+            </div>
+            <div class="chart-tile">
+            <h3>Top Negative States</h3>
+            <img class="plot" src="{{ url_for('static', filename='plots/neg_states.png') }}?v={{ metrics.plots_version }}" alt="Top Negative States">
+            </div>
+            <div class="chart-tile">
+            <h3>Issue Buckets</h3>
+            <img class="plot" src="{{ url_for('static', filename='plots/issues.png') }}?v={{ metrics.plots_version }}" alt="Issue Buckets">
+            </div>
+            <div class="chart-tile">
+            <h3>Frequent Negative Terms</h3>
+            <img class="plot" src="{{ url_for('static', filename='plots/neg_terms.png') }}?v={{ metrics.plots_version }}" alt="Frequent Negative Terms">
+            </div>
+        </div>
+        <p class="muted">Charts generated using matplotlib (saved to <code>static/plots/</code>).</p>
+    </section>
+
+
+    <section class="card">
+      <h2>Sentiment Distribution</h2>
+      <table>
+        <thead><tr><th>Label</th><th>Count</th></tr></thead>
+        <tbody>
+          {% for k,v in metrics.label_counts.items() %}
+            <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Rating Histogram</h2>
+      <table>
+        <thead><tr><th>Rating</th><th>Count</th></tr></thead>
+        <tbody>
+          {% for k,v in metrics.rating_hist.items() %}
+            <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Top Negative States</h2>
+      <table>
+        <thead><tr><th>#</th><th>State</th><th>Negatives</th></tr></thead>
+        <tbody>
+          {% for st,c in metrics.issues_by_state_top %}
+            <tr><td>{{ loop.index }}</td><td>{{ st }}</td><td>{{ c }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Issue Buckets (keyword-based)</h2>
+      <table>
+        <thead><tr><th>Issue</th><th>Mentions in Negative Reviews</th></tr></thead>
+        <tbody>
+          {% for k,v in metrics.issue_buckets.items() %}
+            <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Frequent Negative Terms (from lexicon)</h2>
+      <table>
+        <thead><tr><th>Term</th><th>Count</th></tr></thead>
+        <tbody>
+          {% for w,c in metrics.neg_terms_top %}
+            <tr><td>{{ w }}</td><td>{{ c }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

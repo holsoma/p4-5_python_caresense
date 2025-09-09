@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>CareSense – Rule-Based Sentiment</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <nav>
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('metrics') }}">Metrics</a>
+      <a href="{{ url_for('dataset_admin') }}">Upload dataset</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1>CareSense: Rule-Based Sentiment Demo</h1>
+    <p class="muted">Paste any review to analyze; upload a dataset for metrics.</p>
+
+    <form method="post" class="card">
+      <label for="review_text">Analyze a single review:</label>
+      <textarea id="review_text" name="review_text" rows="5" placeholder="Paste a review...">{{ request.form.get('review_text','') }}</textarea>
+      <button type="submit">Analyze</button>
+    </form>
+
+    {% if result %}
+    <section class="card">
+      <h2>Single Review Result {{ result.emoji }}</h2>
+      <ul>
+        <li><strong>Total score:</strong> {{ "%.3f"|format(result.total_score) }}</li>
+        <li><strong>Label:</strong> {{ result.label }}</li>
+        <li><strong>Most positive sentence:</strong> "{{ result.most_positive_sentence[0] }}" ({{ "%.3f"|format(result.most_positive_sentence[1]) }})</li>
+        <li><strong>Most negative sentence:</strong> "{{ result.most_negative_sentence[0] }}" ({{ "%.3f"|format(result.most_negative_sentence[1]) }})</li>
+        <li><strong>Strongest segment:</strong> "{{ result.strongest_segment.text }}" ({{ "%.3f"|format(result.strongest_segment.score) }})</li>
+      </ul>
+    </section>
+    {% endif %}
+
+    {% if snapshot %}
+    <section class="card">
+      <h2>Metrics Snapshot</h2>
+      <div class="grid">
+        <div>
+          <h3>Labels</h3>
+          <ul>
+            {% for k,v in snapshot.label_counts.items() %}
+              <li><strong>{{ k }}</strong>: {{ v }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
+          <h3>Ratings</h3>
+          <ul>
+            {% for k,v in snapshot.rating_hist.items() %}
+              <li><strong>{{ k }}</strong>: {{ v }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
+          <h3>Top Negative States</h3>
+          <ol>
+            {% for st,c in snapshot.issues_by_state_top %}
+              <li>{{ st }} — {{ c }}</li>
+            {% endfor %}
+          </ol>
+        </div>
+      </div>
+      <p class="muted">Snapshot computed from a subset for speed. See full <a href="{{ url_for('metrics') }}">Metrics</a>.</p>
+    </section>
+    {% elif not has_dataset %}
+      <div class="card">
+        <p>No dataset uploaded yet. Go to <a href="{{ url_for('dataset_admin') }}">Upload dataset</a> to add your CSV/TSV.</p>
+      </div>
+    {% endif %}
+  </main>
+</body>
+</html>

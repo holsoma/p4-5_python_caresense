@@ -1,0 +1,47 @@
+:root { font-family: system-ui, sans-serif; }
+body { margin: 0; background: #f7f7fb; color: #222; }
+.container { max-width: 1000px; margin: 40px auto; padding: 0 16px; }
+.topbar { background: #0a6; color: white; }
+.topbar nav { max-width: 1000px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 16px; }
+.topbar a { color: white; text-decoration: none; opacity: 0.9; }
+.topbar a.active, .topbar a:hover { opacity: 1; text-decoration: underline; }
+.muted { color: #666; }
+.card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.06); margin: 16px 0; }
+label { display: block; font-weight: 600; margin: 8px 0; }
+textarea, input[type="text"], input[type="file"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: #fafafa; }
+button { margin-top: 12px; padding: 10px 16px; border: 0; background: #2a6; color: white; border-radius: 10px; cursor: pointer; }
+button:hover { filter: brightness(0.95); }
+.alert { background: #fff3cd; color: #7a5; padding: 12px; border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; border-bottom: 1px solid #eee; padding: 8px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+
+
+/* --- Charts: prevent overlap & keep them responsive --- */
+img.plot {
+  display: block;           /* each chart sits on its own line */
+  max-width: 100%;          /* scale down on smaller screens */
+  height: auto;             /* keep aspect ratio */
+  margin: 8px 0;            /* breathing room */
+}
+
+/* A more robust grid that auto-wraps without crowding */
+.grid.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;                /* space between tiles */
+  align-items: start;       /* don’t stretch images strangely */
+}
+
+/* Optional: a simple tile to keep each chart contained */
+.chart-tile {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  padding: 12px;
+}
+.chart-tile h3 {
+  margin: 0 0 6px 0;
+  font-size: 0.95rem;
+  color: #333;
+}
