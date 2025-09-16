@@ -9,7 +9,7 @@ body{ margin:0; font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif
 .cards{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
 .card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; }
 .card .k{ color:var(--muted); font-size:14px; }
-.card .v{ font-size:28px; font-weight:700; margin-top:6px; }
+.card .v{ font-size:28px; margin-top:6px; font-weight: bold;}
 .card.ok .v{ color:var(--ok); }
 .card.warn .v{ color:var(--warn); }
 .panel{ background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px; margin-top:16px; }
@@ -19,3 +19,4 @@ body{ margin:0; font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif
 .review{ display:grid; grid-template-columns:auto 1fr; gap:10px; border:1px solid var(--border); border-radius:12px; padding:12px; }
 .pill{ color:#fff; padding:4px 8px; border-radius:999px; font-size:12px; height:fit-content; }
 .meta{ color:var(--muted); display:flex; gap:12px; font-size:12px; }
+.delta { font-size: 12px; margin-left: 8px; color: var(--muted); font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;}

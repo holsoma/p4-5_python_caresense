@@ -21,10 +21,40 @@
   </section>
 
   <section class="cards">
-    <div class="card"><div class="k">Total Reviews</div><div class="v">{{ metrics.total_reviews }}</div></div>
-    <div class="card ok"><div class="k">Positive Reviews</div><div class="v">{{ metrics.pos_pct }}%</div></div>
-    <div class="card warn"><div class="k">Negative Reviews</div><div class="v">{{ metrics.neg_pct }}%</div></div>
-    <div class="card"><div class="k">Average Rating</div><div class="v">{{ metrics.avg_rating }}</div></div>
+    <div class="card">
+      <div class="k">Total Reviews</div>
+      <div class="v">
+        {{ metrics.total_reviews }}<br>
+        <span class="delta {{ 'up' if metrics.total_delta_pct>=0 else 'down' }}">
+          {{ '%+.1f'|format(metrics.total_delta_pct) }}% from last month
+        </span>
+      </div>
+    </div>
+
+    <div class="card ok">
+      <div class="k">Positive Reviews</div>
+      <div class="v">
+        {{ metrics.pos_pct }}%<br>
+        <span class="delta {{ 'up' if metrics.pos_delta>=0 else 'down' }}">
+          {{ '%+.1f'|format(metrics.pos_delta) }}% from last month
+        </span>
+      </div>
+    </div>
+
+    <div class="card warn">
+      <div class="k">Negative Reviews</div>
+      <div class="v">
+        {{ metrics.neg_pct }}%<br>
+        <span class="delta {{ 'down' if metrics.neg_delta<=0 else 'up' }}">
+          {{ '%+.1f'|format(metrics.neg_delta) }}% from last month
+        </span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="k">Average Rating</div>
+      <div class="v">{{ metrics.avg_rating }}</div>
+    </div>
   </section>
 
   <section class="panel">

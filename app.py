@@ -109,7 +109,7 @@ Demonstrates: modules, functions, control flow, string formatting, dictionaries,
 from flask import Flask, render_template, request, redirect, url_for
 
 from data_loader import load_reviews_csv
-from metrics import compute_dashboard_metrics, monthly_sentiment_trend
+from metrics import monthly_sentiment_trend, monthly_card_metrics
 from sentiment_engine import analyze_review, label_to_color
 
 app = Flask(__name__)
@@ -138,7 +138,7 @@ def dashboard():
     year = request.args.get("year", "2024")
     state = request.args.get("state", "All States")
 
-    metrics = compute_dashboard_metrics(REVIEWS, year_filter=year, state_filter=state)
+    metrics = monthly_card_metrics(REVIEWS, year_filter=year, state_filter=state)
     trend = monthly_sentiment_trend(REVIEWS, year)
 
     return render_template(
