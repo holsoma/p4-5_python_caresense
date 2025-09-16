@@ -124,7 +124,7 @@ def init_data():
     """
     global REVIEWS
     if not REVIEWS:
-        REVIEWS = load_reviews_csv("data/sample_reviews.csv")
+        REVIEWS = load_reviews_csv("data/sample_reviews_300.csv")
         # Attach sentiment labels if missing
         for r in REVIEWS:
             if not r.get("Label"):
