@@ -8,8 +8,9 @@ body{ margin:0; font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif
 .filters label{ display:grid; gap:6px; font-size:14px; color:var(--muted); }
 .cards{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
 .card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; }
-.card .k{ color:var(--muted); font-size:14px; }
+.card .k{ color:var(--muted); font-size:14px; font-weight: bold;}
 .card .v{ font-size:28px; margin-top:6px; font-weight: bold;}
+.card .v > span{ font-weight: lighter;}
 .card.ok .v{ color:var(--ok); }
 .card.warn .v{ color:var(--warn); }
 .panel{ background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px; margin-top:16px; }

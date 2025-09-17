@@ -1,10 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
   <h2>Reviews</h2>
-  <form class="inline" action="/analyze" method="post">
-    <input name="text" placeholder="Paste a review to analyze…" />
-    <button type="submit">Analyze</button>
-  </form>
   <ul class="reviews">
     {% for r in reviews %}
       <li class="review">
