@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <h2>Reviews</h2>
+  <ul class="reviews">
+    {% for r in reviews %}
+      <li class="review">
+        <div class="pill" style="background: {{ r.LabelColor }}">{{ r.Label or 'neutral' }}</div>
+        <div class="body">
+          <div class="meta">
+            <strong>{{ r.Author }}</strong>
+            <span>⭐ {{ r['Review Rating'] }}</span>
+            <span>{{ r.Date }}</span>
+            <span>{{ r.State }}</span>
+          </div>
+          <p>{{ r.Snippet }}</p>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

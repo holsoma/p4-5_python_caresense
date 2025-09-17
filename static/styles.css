@@ -1,47 +1,23 @@
-:root { font-family: system-ui, sans-serif; }
-body { margin: 0; background: #f7f7fb; color: #222; }
-.container { max-width: 1000px; margin: 40px auto; padding: 0 16px; }
-.topbar { background: #0a6; color: white; }
-.topbar nav { max-width: 1000px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 16px; }
-.topbar a { color: white; text-decoration: none; opacity: 0.9; }
-.topbar a.active, .topbar a:hover { opacity: 1; text-decoration: underline; }
-.muted { color: #666; }
-.card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.06); margin: 16px 0; }
-label { display: block; font-weight: 600; margin: 8px 0; }
-textarea, input[type="text"], input[type="file"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: #fafafa; }
-button { margin-top: 12px; padding: 10px 16px; border: 0; background: #2a6; color: white; border-radius: 10px; cursor: pointer; }
-button:hover { filter: brightness(0.95); }
-.alert { background: #fff3cd; color: #7a5; padding: 12px; border-radius: 8px; }
-table { width: 100%; border-collapse: collapse; }
-th, td { text-align: left; border-bottom: 1px solid #eee; padding: 8px; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-
-
-/* --- Charts: prevent overlap & keep them responsive --- */
-img.plot {
-  display: block;           /* each chart sits on its own line */
-  max-width: 100%;          /* scale down on smaller screens */
-  height: auto;             /* keep aspect ratio */
-  margin: 8px 0;            /* breathing room */
-}
-
-/* A more robust grid that auto-wraps without crowding */
-.grid.charts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 16px;                /* space between tiles */
-  align-items: start;       /* don’t stretch images strangely */
-}
-
-/* Optional: a simple tile to keep each chart contained */
-.chart-tile {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.06);
-  padding: 12px;
-}
-.chart-tile h3 {
-  margin: 0 0 6px 0;
-  font-size: 0.95rem;
-  color: #333;
-}
+:root { --muted:#6b7280; --card:#f8fafc; --border:#e5e7eb; --ok:#22c55e; --warn:#ef4444; }
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:#111827; }
+.topbar{ display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border); background:#fff; position:sticky; top:0; }
+.brand{ font-weight:700; }
+.container{ max-width:1000px; margin:24px auto; padding:0 16px; }
+.filters form{ display:flex; gap:12px; align-items:end; margin-bottom:16px; }
+.filters label{ display:grid; gap:6px; font-size:14px; color:var(--muted); }
+.cards{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+.card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; }
+.card .k{ color:var(--muted); font-size:14px; font-weight: bold;}
+.card .v{ font-size:28px; margin-top:6px; font-weight: bold;}
+.card .v > span{ font-weight: lighter;}
+.card.ok .v{ color:var(--ok); }
+.card.warn .v{ color:var(--warn); }
+.panel{ background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px; margin-top:16px; }
+.xlab{ font-size:10px; fill:#6b7280; }
+.inline{ display:flex; gap:8px; margin:12px 0; }
+.reviews{ list-style:none; padding:0; display:grid; gap:10px; }
+.review{ display:grid; grid-template-columns:auto 1fr; gap:10px; border:1px solid var(--border); border-radius:12px; padding:12px; }
+.pill{ color:#fff; padding:4px 8px; border-radius:999px; font-size:12px; height:fit-content; }
+.meta{ color:var(--muted); display:flex; gap:12px; font-size:12px; }
+.delta { font-size: 12px; margin-left: 8px; color: var(--muted); font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;}

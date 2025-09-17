@@ -1,78 +1,93 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>CareSense – Rule-Based Sentiment</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-  <header class="topbar">
-    <nav>
-      <a href="{{ url_for('index') }}">Home</a>
-      <a href="{{ url_for('metrics') }}">Metrics</a>
-      <a href="{{ url_for('dataset_admin') }}">Upload dataset</a>
-    </nav>
-  </header>
-
-  <main class="container">
-    <h1>CareSense: Rule-Based Sentiment Demo</h1>
-    <p class="muted">Paste any review to analyze; upload a dataset for metrics.</p>
-
-    <form method="post" class="card">
-      <label for="review_text">Analyze a single review:</label>
-      <textarea id="review_text" name="review_text" rows="5" placeholder="Paste a review...">{{ request.form.get('review_text','') }}</textarea>
-      <button type="submit">Analyze</button>
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="filters">
+    <form method="get" action="/">
+      <label>State
+        <select name="state">
+          <option {{ 'selected' if state=='All States' }}>All States</option>
+          <option>California</option>
+          <option>New York</option>
+          <option>Texas</option>
+        </select>
+      </label>
+      <label>Year
+        <select name="year">
+          <option {{ 'selected' if year=='2024' }}>2024</option>
+          <option>2023</option>
+        </select>
+      </label>
+      <button type="submit">Apply</button>
     </form>
+  </section>
 
-    {% if result %}
-    <section class="card">
-      <h2>Single Review Result {{ result.emoji }}</h2>
-      <ul>
-        <li><strong>Total score:</strong> {{ "%.3f"|format(result.total_score) }}</li>
-        <li><strong>Label:</strong> {{ result.label }}</li>
-        <li><strong>Most positive sentence:</strong> "{{ result.most_positive_sentence[0] }}" ({{ "%.3f"|format(result.most_positive_sentence[1]) }})</li>
-        <li><strong>Most negative sentence:</strong> "{{ result.most_negative_sentence[0] }}" ({{ "%.3f"|format(result.most_negative_sentence[1]) }})</li>
-        <li><strong>Strongest segment:</strong> "{{ result.strongest_segment.text }}" ({{ "%.3f"|format(result.strongest_segment.score) }})</li>
-      </ul>
-    </section>
-    {% endif %}
+  <section class="cards">
+    <div class="card">
+      <div class="k">Total Reviews</div>
+      <div class="v">
+        {{ metrics.total_reviews }}<br>
+        <span class="delta {{ 'up' if metrics.total_delta_pct>=0 else 'down' }}">
+          {{ '%+.1f'|format(metrics.total_delta_pct) }}% from last month
+        </span>
+      </div>
+    </div>
 
-    {% if snapshot %}
-    <section class="card">
-      <h2>Metrics Snapshot</h2>
-      <div class="grid">
-        <div>
-          <h3>Labels</h3>
-          <ul>
-            {% for k,v in snapshot.label_counts.items() %}
-              <li><strong>{{ k }}</strong>: {{ v }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-        <div>
-          <h3>Ratings</h3>
-          <ul>
-            {% for k,v in snapshot.rating_hist.items() %}
-              <li><strong>{{ k }}</strong>: {{ v }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-        <div>
-          <h3>Top Negative States</h3>
-          <ol>
-            {% for st,c in snapshot.issues_by_state_top %}
-              <li>{{ st }} — {{ c }}</li>
-            {% endfor %}
-          </ol>
-        </div>
+    <div class="card ok">
+      <div class="k">Positive Reviews</div>
+      <div class="v">
+        {{ metrics.pos_pct }}%<br>
+        <span class="delta {{ 'up' if metrics.pos_delta>=0 else 'down' }}">
+          {{ '%+.1f'|format(metrics.pos_delta) }}% from last month
+        </span>
       </div>
-      <p class="muted">Snapshot computed from a subset for speed. See full <a href="{{ url_for('metrics') }}">Metrics</a>.</p>
-    </section>
-    {% elif not has_dataset %}
-      <div class="card">
-        <p>No dataset uploaded yet. Go to <a href="{{ url_for('dataset_admin') }}">Upload dataset</a> to add your CSV/TSV.</p>
+    </div>
+
+    <div class="card warn">
+      <div class="k">Negative Reviews</div>
+      <div class="v">
+        {{ metrics.neg_pct }}%<br>
+        <span class="delta {{ 'down' if metrics.neg_delta<=0 else 'up' }}">
+          {{ '%+.1f'|format(metrics.neg_delta) }}% from last month
+        </span>
       </div>
-    {% endif %}
-  </main>
-</body>
-</html>
+    </div>
+
+    <div class="card">
+      <div class="k">Average Rating</div>
+      <div class="v">{{ metrics.avg_rating }}</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h3>Sentiment Trend Analysis ({{ year }})</h3>
+    <!-- Tiny SVG chart built with Jinja to avoid extra libs -->
+    {% set W=720 %}{% set H=220 %}
+    {% set pad=30 %}
+    {% set months = trend|map(attribute='month')|list %}
+    {% set maxY = 100 %}
+    <svg viewBox="0 0 {{ W }} {{ H }}" role="img" aria-label="Monthly sentiment trend">
+      <rect x="0" y="0" width="{{ W }}" height="{{ H }}" fill="#fff" stroke="#e5e7eb" />
+      {% macro path_for(field) -%}
+        {%- set n = trend|length -%}
+        {%- if n==0 -%}M0 0{%- else -%}
+          {%- for p in trend -%}
+            {%- set x = pad + (W-2*pad) * loop.index0 / (n-1 if n>1 else 1) -%}
+            {%- set y = pad + (H-2*pad) * (1 - (p[field]/maxY)) -%}
+            {{ 'M' if loop.first else 'L' }}{{ x }} {{ y }}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endmacro %}
+
+      <path d="{{ path_for('pos') }}" fill="none" stroke="#22c55e" stroke-width="2" />
+      <path d="{{ path_for('neu') }}" fill="none" stroke="#f59e0b" stroke-width="2" />
+      <path d="{{ path_for('neg') }}" fill="none" stroke="#ef4444" stroke-width="2" />
+
+      <!-- x labels -->
+      {% for p in trend %}
+        {% set x = pad + (W-2*pad) * loop.index0 / ((trend|length-1) if (trend|length>1) else 1) %}
+        <text x="{{ x }}" y="{{ H-8 }}" text-anchor="middle" class="xlab">{{ p.month[-2:] }}</text>
+      {% endfor %}
+    </svg>
+  </section>
+{% endblock %}
+
+

@@ -1,4 +1,5 @@
-# Ignore CSV in data folder
+# Ignore CSV and data folder
+data/
 *.csv
 
 # Byte-compiled / optimized / DLL files
