@@ -32,3 +32,6 @@ def load_reviews_csv(path: str) -> list[dict]:
                 }
             )
     return rows
+
+
+# upload dataset function here
