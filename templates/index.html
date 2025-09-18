@@ -81,10 +81,11 @@
       <path d="{{ path_for('neu') }}" fill="none" stroke="#f59e0b" stroke-width="2" />
       <path d="{{ path_for('neg') }}" fill="none" stroke="#ef4444" stroke-width="2" />
 
-      <!-- x labels -->
+      <!-- x labels and vertical gridline -->
       {% for p in trend %}
         {% set x = pad + (W-2*pad) * loop.index0 / ((trend|length-1) if (trend|length>1) else 1) %}
-        <text x="{{ x }}" y="{{ H-8 }}" text-anchor="middle" class="xlab">{{ p.month[-2:] }}</text>
+        <line x1="{{ x }}" x2="{{ x }}" y1="{{ pad }}" y2="{{ H-pad }}" stroke="#f3f4f6" stroke-width="1" stroke-dasharray="2,2" />
+        <text x="{{ x }}" y="{{ H-8 }}" text-anchor="middle" class="xlab">{{ p.month_name }}</text>
       {% endfor %}
     </svg>
   </section>

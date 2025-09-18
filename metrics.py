@@ -79,6 +79,14 @@ def monthly_card_metrics(rows: list[dict], *, year_filter: str, state_filter: st
 
 
 def monthly_sentiment_trend(rows: list[dict], year: str) -> list[dict]:
+    
+    # month name lookup dictionary
+    month_lookup = {
+        '01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr',
+        '05': 'May', '06': 'Jun', '07': 'Jul', '08': 'Aug',
+        '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dec'
+    }
+    
     # group by YearMonth then compute pos/neu/neg counts
     buckets: dict[str, dict[str, int]] = defaultdict(lambda: {"positive": 0, "neutral": 0, "negative": 0})
 
@@ -98,9 +106,11 @@ def monthly_sentiment_trend(rows: list[dict], year: str) -> list[dict]:
         trend.append(
             {
                 "month": m,
+                "month_name": month_lookup[m[-2:]],  # lookup in dictionary to get month name
                 "pos": round(100 * counts["positive"] / total, 1),
                 "neu": round(100 * counts["neutral"] / total, 1),
                 "neg": round(100 * counts["negative"] / total, 1),
             }
         )
+    print(trend)
     return trend
