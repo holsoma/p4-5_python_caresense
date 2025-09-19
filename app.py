@@ -37,8 +37,28 @@ def dashboard():
     year = request.args.get("year", "2024")
     state = request.args.get("state", "All States")
 
+    review_year = request.args.get("review_year", "All")
+    review_state = request.args.get("review_state", "All States")
+    review_stars = request.args.get("review_stars", "All")
+    keyword = request.args.get("keyword", "").lower()
+
     metrics = monthly_card_metrics(REVIEWS, year_filter=year, state_filter=state)
     trend = monthly_sentiment_trend(REVIEWS, year)
+
+    filtered_reviews = []
+    for r in REVIEWS:
+        if (review_year == "All" or r["YearMonth"].startswith(review_year)) \
+        and (review_state in ("All States", "All") or r["State"] == review_state) \
+        and (review_stars == "All" or str(r["Review Rating"]) == review_stars) and(not keyword or keyword in r["Review Text"].lower()):
+                
+            
+                filtered_reviews.append({
+                **r,
+                "LabelColor": label_to_color(r.get("Label", "neutral")),
+                "Snippet": (r.get("Review Text", "")[:140] + "…") 
+                           if len(r.get("Review Text", "")) > 140 
+                           else r.get("Review Text", ""),
+            })
 
     return render_template(
         "index.html",
@@ -46,10 +66,14 @@ def dashboard():
         state=state,
         metrics=metrics,
         trend=trend,
+        reviews=filtered_reviews,     
+        review_year=review_year,        
+        review_state=review_state,     
+        review_stars=review_stars, 
     )
 
 
-@app.route("/reviews")
+@app.route("/")
 def reviews():
     init_data()
     labeled = [
@@ -62,7 +86,7 @@ def reviews():
     ]
     # Sort by sentiment score (lambda demo) – highest first
     labeled.sort(key=lambda x: x.get("Score", 0), reverse=True)
-    return render_template("reviews.html", reviews=labeled)
+    return render_template("index.html", reviews=labeled)
 
 
 @app.route("/analyze", methods=["POST"])
